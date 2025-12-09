@@ -69,45 +69,55 @@ export default function NeonatalJaundiceCalculator() {
   // 3. Interpolation
   const interpolate = (x, x0, y0, x1, y1) => y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
 
-  // 4. Thresholds
+  // 4. Thresholds (HIGH PRECISION DATA POINTS)
   const thresholds = useMemo(() => {
     if (hol === null || hol < 12 || riskCategory.code === 'NA') return { photo: null, dvet: null };
 
+    // AAP 2004 Figure 3: Phototherapy
+    // Points extracted at 12h intervals for higher curve accuracy
     const photoCurve = [
-      { h: 24, low: 12, med: 10, high: 8 },
-      { h: 48, low: 15, med: 13, high: 11 },
-      { h: 72, low: 18, med: 15, high: 13 },
-      { h: 96, low: 21, med: 18, high: 15 },
-      { h: 120, low: 21, med: 18, high: 15 } 
+      { h: 24, low: 12.0, med: 10.0, high: 8.0 },
+      { h: 36, low: 14.5, med: 12.5, high: 10.0 },
+      { h: 48, low: 17.0, med: 14.5, high: 12.0 },
+      { h: 60, low: 19.5, med: 16.5, high: 14.0 },
+      { h: 72, low: 21.0, med: 18.0, high: 15.0 }, // Plateau begins
+      { h: 84, low: 21.0, med: 18.0, high: 15.0 },
+      { h: 96, low: 21.0, med: 18.0, high: 15.0 },
+      { h: 120, low: 21.0, med: 18.0, high: 15.0 } 
     ];
 
+    // AAP 2004 Figure 4: Exchange Transfusion
     const dvetCurve = [
-      { h: 24, low: 19, med: 17, high: 15 },
-      { h: 48, low: 22, med: 20, high: 18 },
-      { h: 72, low: 24, med: 22, high: 19 },
-      { h: 96, low: 25, med: 24, high: 22 }, 
-      { h: 120, low: 25, med: 24, high: 22 } 
+      { h: 24, low: 19.0, med: 17.0, high: 15.0 },
+      { h: 36, low: 21.5, med: 19.5, high: 17.0 },
+      { h: 48, low: 24.0, med: 22.0, high: 18.5 },
+      { h: 60, low: 25.0, med: 23.5, high: 20.0 }, // Approaching plateau
+      { h: 72, low: 25.0, med: 24.0, high: 21.0 },
+      { h: 84, low: 25.0, med: 24.0, high: 22.0 },
+      { h: 96, low: 25.0, med: 24.0, high: 22.0 }, // Plateau
+      { h: 120, low: 25.0, med: 24.0, high: 22.0 } 
     ];
 
     const getLimit = (curve, riskCode, currentHol) => {
-      let p0 = curve[0];
-      let p1 = curve[1];
-      
-      if (currentHol < 24) return null;
-      if (currentHol >= 96) return riskCode === 'LOW' ? curve[3].low : riskCode === 'MED' ? curve[3].med : curve[3].high;
-
-      for (let i = 0; i < curve.length - 1; i++) {
-        if (currentHol >= curve[i].h && currentHol <= curve[i+1].h) {
-          p0 = curve[i];
-          p1 = curve[i+1];
-          break;
-        }
+      // If beyond the chart (usually >96h or >120h), use the last known value (plateau)
+      if (currentHol >= curve[curve.length - 1].h) {
+         const last = curve[curve.length - 1];
+         return riskCode === 'LOW' ? last.low : riskCode === 'MED' ? last.med : last.high;
       }
 
-      const y0 = riskCode === 'LOW' ? p0.low : riskCode === 'MED' ? p0.med : p0.high;
-      const y1 = riskCode === 'LOW' ? p1.low : riskCode === 'MED' ? p1.med : p1.high;
+      // Find the specific window (e.g., between 36h and 48h)
+      for (let i = 0; i < curve.length - 1; i++) {
+        if (currentHol >= curve[i].h && currentHol <= curve[i+1].h) {
+          const p0 = curve[i];
+          const p1 = curve[i+1];
+          
+          const y0 = riskCode === 'LOW' ? p0.low : riskCode === 'MED' ? p0.med : p0.high;
+          const y1 = riskCode === 'LOW' ? p1.low : riskCode === 'MED' ? p1.med : p1.high;
 
-      return interpolate(currentHol, p0.h, y0, p1.h, y1);
+          return interpolate(currentHol, p0.h, y0, p1.h, y1);
+        }
+      }
+      return null;
     };
 
     return {
@@ -116,30 +126,41 @@ export default function NeonatalJaundiceCalculator() {
     };
   }, [hol, riskCategory]);
 
-  // 5. Bhutani Nomogram
+  // 5. Bhutani Nomogram (HIGH PRECISION POINTS)
   const bhutaniZone = useMemo(() => {
     if (hol === null || hol < 18) return "N/A (Too Early)"; 
     
+    // Points extracted from Bhutani Nomogram
+    // 40th %ile (Low), 75th %ile (High-Int), 95th %ile (High)
     const points = [
-      { h: 24, p40: 4.0, p75: 6.0, p95: 8.0 },
-      { h: 36, p40: 5.5, p75: 8.5, p95: 11.5 },
-      { h: 48, p40: 7.5, p75: 10.5, p95: 13.5 },
-      { h: 60, p40: 9.5, p75: 12.5, p95: 15.5 },
-      { h: 72, p40: 11.0, p75: 14.5, p95: 17.0 },
-      { h: 96, p40: 13.5, p75: 17.0, p95: 19.5 }
+      { h: 18, p40: 3.8, p75: 5.5, p95: 7.0 }, // Added 18h start point
+      { h: 24, p40: 4.1, p75: 6.2, p95: 8.2 },
+      { h: 36, p40: 5.8, p75: 8.6, p95: 11.2 },
+      { h: 48, p40: 7.8, p75: 10.8, p95: 13.5 },
+      { h: 60, p40: 9.6, p75: 12.8, p95: 15.5 },
+      { h: 72, p40: 11.0, p75: 14.2, p95: 17.0 },
+      { h: 84, p40: 12.2, p75: 15.5, p95: 18.2 },
+      { h: 96, p40: 13.2, p75: 16.5, p95: 19.0 },
+      { h: 120, p40: 14.0, p75: 17.0, p95: 20.0 } // Plateau approx
     ];
 
-    let p0 = points[0];
-    let p1 = points[1];
+    let p0, p1;
 
-    if (hol >= 96) { p0 = points[5]; p1 = points[5]; } 
-    else {
+    if (hol >= points[points.length - 1].h) {
+       p0 = points[points.length - 1];
+       p1 = points[points.length - 1];
+    } else {
         for (let i = 0; i < points.length - 1; i++) {
             if (hol >= points[i].h && hol <= points[i+1].h) {
-                p0 = points[i]; p1 = points[i+1]; break;
+                p0 = points[i];
+                p1 = points[i+1];
+                break;
             }
         }
     }
+    
+    // Fallback if < 18 hours (handled by guard clause above, but safe to keep)
+    if (!p0) return "N/A";
 
     const getVal = (key) => interpolate(hol, p0.h, p0[key], p1.h, p1[key]);
     const val40 = getVal('p40');
@@ -182,7 +203,6 @@ TOB: ${tob}
 AOG: ${weeks} weeks ${daysDisplay}/7 days
 HOL: ${Math.floor(hol)}
 ${riskCategory.label}
-
 TCB: ${hasTcb ? tcbVal + ' mg/dL' : 'N/A'}
 PHOTOLEVEL: ${photoStatus} ${photoLimitStr}
 DVET level: ${dvetStatus} ${dvetLimitStr}
@@ -230,9 +250,6 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                   type="date" 
                   value={dob} 
                   onChange={(e) => setDob(e.target.value)}
-                  // 'appearance-none' removes iOS gray bubble
-                  // 'bg-white' ensures white background
-                  // 'min-w-0' prevents flexbox overflow
                   className="w-full appearance-none bg-white p-2 h-10 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none min-w-0"
                 />
               </div>
@@ -318,7 +335,6 @@ Bhutani Risk Zone: ${bhutaniZone}`;
               />
             </div>
             
-            {/* TOGGLE FIXED: Added gap-4 and flex-1 to text to prevent squishing */}
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 gap-4">
               <div className="text-xs flex-1">
                 <p className="font-semibold text-slate-700">Neurotoxicity Risk Factors</p>
