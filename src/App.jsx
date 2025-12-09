@@ -22,20 +22,17 @@ export default function NeonatalJaundiceCalculator() {
     const now = new Date();
     
     // Manual formatting to ensure Local Time (not UTC)
-    // Format: YYYY-MM-DD
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const dateStr = `${year}-${month}-${day}`;
 
-    // Format: HH:MM
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const timeStr = `${hours}:${minutes}`;
     
     setCurrentDate(dateStr);
     setCurrentTime(timeStr);
-    // Note: We leave DOB and TOB empty intentionally
   }, []);
 
   // --- Calculations ---
@@ -55,7 +52,6 @@ export default function NeonatalJaundiceCalculator() {
 
   // 2. Determine Neonatal Risk Category (AAP 2004 Guidelines)
   const riskCategory = useMemo(() => {
-    // Handle empty inputs safely
     if (gestationWeeks === '' && gestationDays === '') {
       return { label: "Pending Input", code: "NA", color: "text-slate-400 bg-slate-100" };
     }
@@ -82,7 +78,6 @@ export default function NeonatalJaundiceCalculator() {
   const thresholds = useMemo(() => {
     if (hol === null || hol < 12 || riskCategory.code === 'NA') return { photo: null, dvet: null };
 
-    // Data points [HOL, LowRisk, MedRisk, HighRisk]
     const photoCurve = [
       { h: 24, low: 12, med: 10, high: 8 },
       { h: 48, low: 15, med: 13, high: 11 },
@@ -241,14 +236,16 @@ Bhutani Risk Zone: ${bhutaniZone}`;
               Patient Details
             </h3>
             
-            <div className="grid grid-cols-2 gap-3">
+            {/* MOBILE FIX: grid-cols-1 on small screens, grid-cols-2 on tablet/desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Birth Date</label>
                 <input 
                   type="date" 
                   value={dob} 
                   onChange={(e) => setDob(e.target.value)}
-                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  // MOBILE FIX: text-base prevents zoom on iPhone, md:text-sm keeps it small on PC
+                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
                 />
               </div>
               <div className="space-y-1">
@@ -257,7 +254,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                   type="time" 
                   value={tob} 
                   onChange={(e) => setTob(e.target.value)}
-                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
                 />
               </div>
             </div>
@@ -265,7 +262,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
             <div className="space-y-1">
               <label className="text-xs font-medium text-slate-600">Gestational Age (AOG)</label>
               <div className="flex gap-2">
-                <div className="flex-1 flex items-center border border-slate-300 rounded-lg px-2">
+                <div className="flex-1 flex items-center border border-slate-300 rounded-lg px-2 bg-white">
                   <input 
                     type="number" 
                     min="35" 
@@ -273,11 +270,11 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                     value={gestationWeeks} 
                     onChange={(e) => setGestationWeeks(e.target.value)}
                     placeholder="39"
-                    className="w-full p-2 text-sm outline-none"
+                    className="w-full p-2 h-10 text-base md:text-sm outline-none bg-transparent"
                   />
                   <span className="text-xs text-slate-400 mr-2">weeks</span>
                 </div>
-                <div className="flex-1 flex items-center border border-slate-300 rounded-lg px-2">
+                <div className="flex-1 flex items-center border border-slate-300 rounded-lg px-2 bg-white">
                   <input 
                     type="number" 
                     min="0" 
@@ -285,7 +282,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                     value={gestationDays} 
                     onChange={(e) => setGestationDays(e.target.value)}
                     placeholder="0"
-                    className="w-full p-2 text-sm outline-none"
+                    className="w-full p-2 h-10 text-base md:text-sm outline-none bg-transparent"
                   />
                   <span className="text-xs text-slate-400 mr-2">days</span>
                 </div>
@@ -300,14 +297,15 @@ Bhutani Risk Zone: ${bhutaniZone}`;
               Assessment
             </h3>
 
-             <div className="grid grid-cols-2 gap-3">
+             {/* MOBILE FIX: grid-cols-1 on small screens */}
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Current Date</label>
                 <input 
                   type="date" 
                   value={currentDate} 
                   onChange={(e) => setCurrentDate(e.target.value)}
-                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                 />
               </div>
               <div className="space-y-1">
@@ -316,7 +314,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                   type="time" 
                   value={currentTime} 
                   onChange={(e) => setCurrentTime(e.target.value)}
-                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                 />
               </div>
             </div>
@@ -329,17 +327,15 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                 placeholder="e.g. 7.5"
                 value={bilirubin}
                 onChange={(e) => setBilirubin(e.target.value)}
-                className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
               />
             </div>
             
-            {/* Added gap-4 for spacing */}
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 gap-4">
               <div className="text-xs">
                 <p className="font-semibold text-slate-700">Neurotoxicity Risk Factors</p>
-                <p className="text-slate-400 text-[10px] mt-0.5">Isoimmune disease, G6PD, asphyxia, sepsis, acidosis, albumin &lt; 3.0</p>
+                <p className="text-slate-400 text-[10px] mt-0.5 leading-relaxed">Isoimmune disease, G6PD, asphyxia, sepsis, acidosis, albumin &lt; 3.0</p>
               </div>
-              {/* FIXED TOGGLE BUTTON: w-11 container with translate-x-5 ensures fit */}
               <button 
                 onClick={() => setRiskFactors(!riskFactors)}
                 className={`w-11 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out flex-shrink-0 ${riskFactors ? 'bg-red-500' : 'bg-slate-300'}`}
@@ -371,7 +367,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
           </div>
           
           <div className="p-6 bg-slate-50">
-            <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+            <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 bg-white p-4 rounded-lg border border-slate-200 shadow-inner overflow-x-auto">
               {reportText}
             </pre>
           </div>
