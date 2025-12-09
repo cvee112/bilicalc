@@ -76,13 +76,15 @@ export default function NeonatalJaundiceCalculator() {
     // AAP 2004 Figure 3: Phototherapy
     // Points extracted at 12h intervals for higher curve accuracy
     const photoCurve = [
-      { h: 24, low: 12.0, med: 10.0, high: 8.0 },
-      { h: 36, low: 14.5, med: 12.5, high: 10.0 },
-      { h: 48, low: 17.0, med: 14.5, high: 12.0 },
-      { h: 60, low: 19.5, med: 16.5, high: 14.0 },
-      { h: 72, low: 21.0, med: 18.0, high: 15.0 }, // Plateau begins
-      { h: 84, low: 21.0, med: 18.0, high: 15.0 },
-      { h: 96, low: 21.0, med: 18.0, high: 15.0 },
+      { h: 12, low: 9.0, med: 7.5, high: 6.0 },
+      { h: 24, low: 11.5, med: 10.0, high: 8.0 },
+      { h: 36, low: 13.5, med: 11.5, high: 9.5 },
+      { h: 48, low: 15.0, med: 13.0, high: 11.0 },
+      { h: 60, low: 16.5, med: 14.5, high: 12.5 },
+      { h: 72, low: 17.5, med: 15.5, high: 13.5 }, // Plateau begins
+      { h: 84, low: 19.0, med: 16.5, high: 14.0 },
+      { h: 96, low: 20.0, med: 17.0, high: 14.5 },
+      { h: 108, low, 20.5, med, 18.0, high: 15.0 },
       { h: 120, low: 21.0, med: 18.0, high: 15.0 } 
     ];
 
