@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Copy, AlertCircle, Calculator, Check } from 'lucide-react';
 
 export default function NeonatalJaundiceCalculator() {
   // --- State Management ---
-  // Defaults are now empty strings '' to ensure fields start blank
   const [dob, setDob] = useState('');
   const [tob, setTob] = useState('');
+  
+  // These will be populated by the useEffect below
   const [currentDate, setCurrentDate] = useState('');
   const [currentTime, setCurrentTime] = useState('');
   
@@ -15,6 +16,27 @@ export default function NeonatalJaundiceCalculator() {
   
   const [riskFactors, setRiskFactors] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // --- Initialization ---
+  useEffect(() => {
+    const now = new Date();
+    
+    // Manual formatting to ensure Local Time (not UTC)
+    // Format: YYYY-MM-DD
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    // Format: HH:MM
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const timeStr = `${hours}:${minutes}`;
+    
+    setCurrentDate(dateStr);
+    setCurrentTime(timeStr);
+    // Note: We leave DOB and TOB empty intentionally
+  }, []);
 
   // --- Calculations ---
 
