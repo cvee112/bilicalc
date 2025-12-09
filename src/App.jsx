@@ -84,7 +84,7 @@ export default function NeonatalJaundiceCalculator() {
       { h: 72, low: 17.5, med: 15.5, high: 13.5 }, // Plateau begins
       { h: 84, low: 19.0, med: 16.5, high: 14.0 },
       { h: 96, low: 20.0, med: 17.0, high: 14.5 },
-      { h: 108, low, 20.5, med, 18.0, high: 15.0 },
+      { h: 108, low: 20.5, med: 18.0, high: 15.0 },
       { h: 120, low: 21.0, med: 18.0, high: 15.0 } 
     ];
 
