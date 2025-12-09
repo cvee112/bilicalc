@@ -90,14 +90,15 @@ export default function NeonatalJaundiceCalculator() {
 
     // AAP 2004 Figure 4: Exchange Transfusion
     const dvetCurve = [
-      { h: 24, low: 19.0, med: 17.0, high: 15.0 },
-      { h: 36, low: 21.5, med: 19.5, high: 17.0 },
-      { h: 48, low: 24.0, med: 22.0, high: 18.5 },
-      { h: 60, low: 25.0, med: 23.5, high: 20.0 }, // Approaching plateau
-      { h: 72, low: 25.0, med: 24.0, high: 21.0 },
-      { h: 84, low: 25.0, med: 24.0, high: 22.0 },
-      { h: 96, low: 25.0, med: 24.0, high: 22.0 }, // Plateau
-      { h: 120, low: 25.0, med: 24.0, high: 22.0 } 
+      { h: 12, low: 17.5, med: 15.0, high: 13.5 },
+      { h: 24, low: 19.0, med: 16.5, high: 15.0 },
+      { h: 36, low: 21.0, med: 18.0, high: 16.0 },
+      { h: 48, low: 22.0, med: 19.0, high: 17.0 },
+      { h: 60, low: 23.0, med: 20.0, high: 18.0 }, // Approaching plateau
+      { h: 72, low: 24.0, med: 21.0, high: 18.5 },
+      { h: 84, low: 24.5, med: 22.0, high: 19.0 },
+      { h: 96, low: 25.0, med: 22.5, high: 19.0 }, // Plateau
+      { h: 120, low: 25.0, med: 22.5, high: 19.0 } 
     ];
 
     const getLimit = (curve, riskCode, currentHol) => {
