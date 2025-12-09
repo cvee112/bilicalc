@@ -11,6 +11,7 @@ TOB: ${q}
 AOG: ${H} weeks ${R}/7 days
 HOL: ${Math.floor(vl)}
 ${bl.label}
+
 TCB: ${V?k+" mg/dL":"N/A"}
 PHOTOLEVEL: ${Ol} ${yl}
 DVET level: ${r} ${p}
