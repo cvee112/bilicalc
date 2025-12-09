@@ -128,21 +128,25 @@ export default function NeonatalJaundiceCalculator() {
 
   // 5. Bhutani Nomogram (HIGH PRECISION POINTS)
   const bhutaniZone = useMemo(() => {
-    if (hol === null || hol < 18) return "N/A (Too Early)"; 
+    if (hol === null || hol < 12) return "N/A (Too Early)"; 
     
     // Points extracted from Bhutani Nomogram
     // 40th %ile (Low), 75th %ile (High-Int), 95th %ile (High)
     const points = [
-      { h: 18, p40: 3.8, p75: 5.5, p95: 7.0 }, // Added 18h start point
-      { h: 24, p40: 4.1, p75: 6.2, p95: 8.2 },
-      { h: 36, p40: 5.8, p75: 8.6, p95: 11.2 },
-      { h: 48, p40: 7.8, p75: 10.8, p95: 13.5 },
-      { h: 60, p40: 9.6, p75: 12.8, p95: 15.5 },
-      { h: 72, p40: 11.0, p75: 14.2, p95: 17.0 },
-      { h: 84, p40: 12.2, p75: 15.5, p95: 18.2 },
-      { h: 96, p40: 13.2, p75: 16.5, p95: 19.0 },
-      { h: 120, p40: 14.0, p75: 17.0, p95: 20.0 } // Plateau approx
+      { h: 12, p40: 4.0, p75: 5.0, p95: 7.0 },
+      { h: 24, p40: 5.0, p75: 6.0, p95: 8.0 },
+      { h: 36, p40: 8.0, p75: 9.0, p95: 11.0 },
+      { h: 48, p40: 8.5, p75: 11.0, p95: 13.0 },
+      { h: 60, p40: 9.5, p75: 12.5, p95: 15.0 },
+      { h: 72, p40: 11.0, p75: 13.5, p95: 16.0 },
+      { h: 84, p40: 11.5, p75: 14.5, p95: 16.5 },
+      { h: 96, p40: 12.5, p75: 15.0, p95: 17.5 },
+      { h: 108, p40: 13.0, p75: 15.5, p95: 17.5 },
+      { h: 120, p40: 13.0, p75: 16.0, p95: 17.5 },
+      { h: 132, p40: 13.0, p75: 15.5, p95: 17.5 },
+      { h: 144, p40: 13.0, p75: 15.5, p95: 17.5 }
     ];
+
 
     let p0, p1;
 
