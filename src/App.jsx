@@ -6,7 +6,7 @@ export default function NeonatalJaundiceCalculator() {
   const [dob, setDob] = useState('');
   const [tob, setTob] = useState('');
   
-  // These will be populated by the useEffect below
+  // Auto-populated values
   const [currentDate, setCurrentDate] = useState('');
   const [currentTime, setCurrentTime] = useState('');
   
@@ -20,19 +20,16 @@ export default function NeonatalJaundiceCalculator() {
   // --- Initialization ---
   useEffect(() => {
     const now = new Date();
-    
-    // Manual formatting to ensure Local Time (not UTC)
+    // Manual formatting for Local Time
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
-
+    
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    const timeStr = `${hours}:${minutes}`;
     
-    setCurrentDate(dateStr);
-    setCurrentTime(timeStr);
+    setCurrentDate(`${year}-${month}-${day}`);
+    setCurrentTime(`${hours}:${minutes}`);
   }, []);
 
   // --- Calculations ---
@@ -50,7 +47,7 @@ export default function NeonatalJaundiceCalculator() {
     return diffHours >= 0 ? parseFloat(diffHours.toFixed(1)) : 0;
   }, [dob, tob, currentDate, currentTime]);
 
-  // 2. Determine Neonatal Risk Category (AAP 2004 Guidelines)
+  // 2. Risk Category
   const riskCategory = useMemo(() => {
     if (gestationWeeks === '' && gestationDays === '') {
       return { label: "Pending Input", code: "NA", color: "text-slate-400 bg-slate-100" };
@@ -69,12 +66,10 @@ export default function NeonatalJaundiceCalculator() {
     return { label: "High Risk Neonate", code: "HIGH", color: "text-rose-700 bg-rose-50" };
   }, [gestationWeeks, gestationDays, riskFactors]);
 
-  // 3. Threshold Interpolation Helper
-  const interpolate = (x, x0, y0, x1, y1) => {
-    return y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
-  };
+  // 3. Interpolation
+  const interpolate = (x, x0, y0, x1, y1) => y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
 
-  // 4. Get Phototherapy & DVET Thresholds
+  // 4. Thresholds
   const thresholds = useMemo(() => {
     if (hol === null || hol < 12 || riskCategory.code === 'NA') return { photo: null, dvet: null };
 
@@ -121,7 +116,7 @@ export default function NeonatalJaundiceCalculator() {
     };
   }, [hol, riskCategory]);
 
-  // 5. Bhutani Nomogram Logic
+  // 5. Bhutani Nomogram
   const bhutaniZone = useMemo(() => {
     if (hol === null || hol < 18) return "N/A (Too Early)"; 
     
@@ -137,15 +132,11 @@ export default function NeonatalJaundiceCalculator() {
     let p0 = points[0];
     let p1 = points[1];
 
-    if (hol >= 96) {
-       p0 = points[5];
-       p1 = points[5];
-    } else {
+    if (hol >= 96) { p0 = points[5]; p1 = points[5]; } 
+    else {
         for (let i = 0; i < points.length - 1; i++) {
             if (hol >= points[i].h && hol <= points[i+1].h) {
-                p0 = points[i];
-                p1 = points[i+1];
-                break;
+                p0 = points[i]; p1 = points[i+1]; break;
             }
         }
     }
@@ -164,9 +155,7 @@ export default function NeonatalJaundiceCalculator() {
     return "High Risk Zone";
   }, [hol, bilirubin]);
 
-
-  // --- Formatting Output ---
-  
+  // Output
   const generateReport = () => {
     const weeks = parseInt(gestationWeeks);
     const days = parseInt(gestationDays);
@@ -186,7 +175,6 @@ export default function NeonatalJaundiceCalculator() {
       ? (tcbVal >= thresholds.dvet ? "ABOVE" : "BELOW")
       : "N/A";
     const dvetLimitStr = thresholds.dvet ? `(${thresholds.dvet.toFixed(1)})` : "";
-
     const daysDisplay = isNaN(days) ? 0 : days;
 
     return `DOB: ${formatDate(dob)}
@@ -201,10 +189,8 @@ DVET level: ${dvetStatus} ${dvetLimitStr}
 Bhutani Risk Zone: ${bhutaniZone}`;
   };
 
-  const reportText = generateReport();
-
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(reportText);
+    navigator.clipboard.writeText(generateReport());
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -236,16 +222,18 @@ Bhutani Risk Zone: ${bhutaniZone}`;
               Patient Details
             </h3>
             
-            {/* MOBILE FIX: grid-cols-1 on small screens, grid-cols-2 on tablet/desktop */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* GRID LAYOUT RESTORED & iOS STYLING FIXED */}
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Birth Date</label>
                 <input 
                   type="date" 
                   value={dob} 
                   onChange={(e) => setDob(e.target.value)}
-                  // MOBILE FIX: text-base prevents zoom on iPhone, md:text-sm keeps it small on PC
-                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  // 'appearance-none' removes iOS gray bubble
+                  // 'bg-white' ensures white background
+                  // 'min-w-0' prevents flexbox overflow
+                  className="w-full appearance-none bg-white p-2 h-10 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none min-w-0"
                 />
               </div>
               <div className="space-y-1">
@@ -254,7 +242,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                   type="time" 
                   value={tob} 
                   onChange={(e) => setTob(e.target.value)}
-                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  className="w-full appearance-none bg-white p-2 h-10 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none min-w-0"
                 />
               </div>
             </div>
@@ -270,7 +258,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                     value={gestationWeeks} 
                     onChange={(e) => setGestationWeeks(e.target.value)}
                     placeholder="39"
-                    className="w-full p-2 h-10 text-base md:text-sm outline-none bg-transparent"
+                    className="w-full appearance-none p-2 h-10 text-sm outline-none bg-transparent"
                   />
                   <span className="text-xs text-slate-400 mr-2">weeks</span>
                 </div>
@@ -282,7 +270,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                     value={gestationDays} 
                     onChange={(e) => setGestationDays(e.target.value)}
                     placeholder="0"
-                    className="w-full p-2 h-10 text-base md:text-sm outline-none bg-transparent"
+                    className="w-full appearance-none p-2 h-10 text-sm outline-none bg-transparent"
                   />
                   <span className="text-xs text-slate-400 mr-2">days</span>
                 </div>
@@ -297,15 +285,14 @@ Bhutani Risk Zone: ${bhutaniZone}`;
               Assessment
             </h3>
 
-             {/* MOBILE FIX: grid-cols-1 on small screens */}
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Current Date</label>
                 <input 
                   type="date" 
                   value={currentDate} 
                   onChange={(e) => setCurrentDate(e.target.value)}
-                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
+                  className="w-full appearance-none bg-white p-2 h-10 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none min-w-0"
                 />
               </div>
               <div className="space-y-1">
@@ -314,7 +301,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                   type="time" 
                   value={currentTime} 
                   onChange={(e) => setCurrentTime(e.target.value)}
-                  className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
+                  className="w-full appearance-none bg-white p-2 h-10 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none min-w-0"
                 />
               </div>
             </div>
@@ -327,12 +314,13 @@ Bhutani Risk Zone: ${bhutaniZone}`;
                 placeholder="e.g. 7.5"
                 value={bilirubin}
                 onChange={(e) => setBilirubin(e.target.value)}
-                className="w-full p-2 h-10 text-base md:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full appearance-none bg-white p-2 h-10 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
               />
             </div>
             
+            {/* TOGGLE FIXED: Added gap-4 and flex-1 to text to prevent squishing */}
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 gap-4">
-              <div className="text-xs">
+              <div className="text-xs flex-1">
                 <p className="font-semibold text-slate-700">Neurotoxicity Risk Factors</p>
                 <p className="text-slate-400 text-[10px] mt-0.5 leading-relaxed">Isoimmune disease, G6PD, asphyxia, sepsis, acidosis, albumin &lt; 3.0</p>
               </div>
@@ -368,7 +356,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
           
           <div className="p-6 bg-slate-50">
             <pre className="whitespace-pre-wrap font-mono text-sm text-slate-800 bg-white p-4 rounded-lg border border-slate-200 shadow-inner overflow-x-auto">
-              {reportText}
+              {generateReport()}
             </pre>
           </div>
 
