@@ -210,6 +210,7 @@ TOB: ${tob}
 AOG: ${weeks} weeks ${daysDisplay}/7 days
 HOL: ${Math.floor(hol)}
 ${riskCategory.label}
+
 TCB: ${hasTcb ? tcbVal + ' mg/dL' : 'N/A'}
 PHOTOLEVEL: ${photoStatus} ${photoLimitStr}
 DVET level: ${dvetStatus} ${dvetLimitStr}
