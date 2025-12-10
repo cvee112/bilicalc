@@ -405,7 +405,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
         <div className="flex items-start gap-2 p-3 bg-amber-50 text-amber-800 text-xs rounded-lg border border-amber-100">
            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
            <p>
-             <strong>Disclaimer:</strong> This tool uses linear interpolation of <strong>AAP 2004</strong> guidelines. It is a clinical aid, not a medical device. Always verify with official charts/EMR.
+             <strong>Disclaimer:</strong> This tool uses linear interpolation ofmanually coded data points (rounded to nearest 0.5) from the <strong>AAP 2004</strong> graphs. It is a clinical aid, not a medical device. Always verify with official charts.
            </p>
         </div>
 
