@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Copy, AlertCircle, Calculator, Check } from 'lucide-react';
+import { Copy, AlertCircle, Calculator, Check, RotateCcw } from 'lucide-react';
 
 export default function NeonatalJaundiceCalculator() {
   // --- State Management ---
@@ -17,20 +17,42 @@ export default function NeonatalJaundiceCalculator() {
   const [riskFactors, setRiskFactors] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // --- Initialization ---
-  useEffect(() => {
+// --- Helpers ---
+  const getNow = () => {
     const now = new Date();
-    // Manual formatting for Local Time
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    
-    setCurrentDate(`${year}-${month}-${day}`);
-    setCurrentTime(`${hours}:${minutes}`);
+    return {
+      date: `${year}-${month}-${day}`,
+      time: `${hours}:${minutes}`
+    };
+  };
+
+  // --- Initialization ---
+  useEffect(() => {
+    const { date, time } = getNow();
+    setCurrentDate(date);
+    setCurrentTime(time);
   }, []);
+
+  // --- Reset Function (NEW) ---
+  const handleReset = () => {
+    setDob('');
+    setTob('');
+    setGestationWeeks('');
+    setGestationDays('');
+    setBilirubin('');
+    setRiskFactors(false);
+    setCopied(false);
+    
+    // Also refresh the assessment time to "now"
+    const { date, time } = getNow();
+    setCurrentDate(date);
+    setCurrentTime(time);
+  };
 
   // --- Calculations ---
 
@@ -226,18 +248,29 @@ Bhutani Risk Zone: ${bhutaniZone}`;
   return (
     <div className="min-h-screen bg-slate-50 p-4 font-sans text-slate-800">
       <div className="max-w-2xl mx-auto space-y-6">
-        
+
         {/* Header */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Calculator className="w-6 h-6 text-blue-600" />
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex justify-between items-start">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Calculator className="w-6 h-6 text-blue-600" />
+              </div>
+              <h1 className="text-xl font-bold text-slate-900">Neonatal Hyperbilirubinemia Calculator</h1>
             </div>
-            <h1 className="text-xl font-bold text-slate-900">Neonatal Hyperbilirubinemia Calculator</h1>
+            <p className="text-sm text-slate-500">
+              Based on <span className="font-semibold text-slate-700">AAP 2004 Guidelines</span> for infants &ge;35 weeks.
+            </p>
           </div>
-          <p className="text-sm text-slate-500">
-            Based on <span className="font-semibold text-slate-700">AAP 2004 guidelines</span> for infants &ge;35 weeks.
-          </p>
+          
+          {/* RESET BUTTON ADDED HERE */}
+          <button 
+            onClick={handleReset}
+            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+            title="Reset / New Patient"
+          >
+            <RotateCcw className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Inputs Grid */}
