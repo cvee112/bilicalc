@@ -1,16 +1,47 @@
-# React + Vite
+# BiliCalc
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**A clinical decision support tool for assessing neonatal hyperbilirubinemia risk based on AAP 2004 Guidelines.**
 
-Currently, two official plugins are available:
+[View Live Application](https://cvee112.github.io/bilicalc/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Core Functionality
 
-## React Compiler
+- **HOL Computation:** Calculates exact Hours of Life (HOL) from birth and assessment timestamps.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Risk Stratification:** Determines neurotoxicity risk category (Low, Medium, High) based on gestational age and risk factors.
 
-## Expanding the ESLint configuration
+- **Guideline Implementation:** Uses linear interpolation on manually coded data points (rounded to the nearest 0.5) derived from the AAP 2004 graphs on phototherapy, exchange transfusion, and the Bhutani nomogram.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Workflow Efficiency:** Generates formatted, EMR-ready summaries for immediate documentation/communication.
+
+## Clinical References
+
+Algorithms and data points are derived from:
+
+> American Academy of Pediatrics Subcommittee on Hyperbilirubinemia (2004). Management of hyperbilirubinemia in the newborn infant 35 or more weeks of gestation. _Pediatrics, 114_(1), 297–316. https://doi.org/10.1542/peds.114.1.297
+
+## Development
+
+### Prerequisites
+
+- Node.js (LTS)
+
+### Installation
+
+    git clone [https://github.com/YOUR_USERNAME/bilicalc.git](https://github.com/YOUR_USERNAME/bilicalc.git)
+    cd bilicalc
+    npm install
+
+### Local Execution
+
+    npm run dev
+
+### Deployment
+
+Configured for GitHub Pages via `gh-pages`.
+
+    npm run deploy
+
+## Disclaimer
+
+**For educational and reference use only.** This software is provided as a support tool and is not a certified medical device. Healthcare providers must verify all calculations independently against official charts and exercise professional clinical judgment.
