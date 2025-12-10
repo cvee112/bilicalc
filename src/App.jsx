@@ -207,7 +207,7 @@ export default function NeonatalJaundiceCalculator() {
 
     return `DOB: ${formatDate(dob)}
 TOB: ${tob}
-AOG: ${weeks} weeks ${daysDisplay}/7 days
+AOG: ${weeks} weeks ${daysDisplay} days
 HOL: ${Math.floor(hol)}
 ${riskCategory.label}
 
