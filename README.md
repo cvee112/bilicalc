@@ -14,7 +14,7 @@
 
 - **Workflow Efficiency:** Generates formatted, EMR-ready summaries for immediate documentation/communication.
 
-## Clinical References
+## Clinical Reference
 
 Algorithms and data points are derived from:
 
@@ -45,3 +45,7 @@ Configured for GitHub Pages via `gh-pages`.
 ## Disclaimer
 
 **For educational and reference use only.** This software is provided as a support tool and is not a certified medical device. Healthcare providers must verify all calculations independently against official charts and exercise professional clinical judgment.
+
+## Feedback
+
+For suggestions/concerns, you may reach out via Telegram (@cvee112).
