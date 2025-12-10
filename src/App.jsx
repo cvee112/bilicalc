@@ -69,7 +69,7 @@ export default function NeonatalJaundiceCalculator() {
   // 3. Interpolation
   const interpolate = (x, x0, y0, x1, y1) => y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
 
-  // 4. Thresholds (HIGH PRECISION DATA POINTS)
+  // 4. Thresholds
   const thresholds = useMemo(() => {
     if (hol === null || hol < 12 || riskCategory.code === 'NA') return { photo: null, dvet: null };
 
@@ -81,11 +81,11 @@ export default function NeonatalJaundiceCalculator() {
       { h: 36, low: 13.5, med: 11.5, high: 9.5 },
       { h: 48, low: 15.0, med: 13.0, high: 11.0 },
       { h: 60, low: 16.5, med: 14.5, high: 12.5 },
-      { h: 72, low: 17.5, med: 15.5, high: 13.5 }, // Plateau begins
+      { h: 72, low: 17.5, med: 15.5, high: 13.5 },
       { h: 84, low: 19.0, med: 16.5, high: 14.0 },
       { h: 96, low: 20.0, med: 17.0, high: 14.5 },
       { h: 108, low: 20.5, med: 18.0, high: 15.0 },
-      { h: 120, low: 21.0, med: 18.0, high: 15.0 } 
+      { h: 120, low: 21.0, med: 18.0, high: 15.0 } // Plateau
     ];
 
     // AAP 2004 Figure 4: Exchange Transfusion
@@ -94,7 +94,7 @@ export default function NeonatalJaundiceCalculator() {
       { h: 24, low: 19.0, med: 16.5, high: 15.0 },
       { h: 36, low: 21.0, med: 18.0, high: 16.0 },
       { h: 48, low: 22.0, med: 19.0, high: 17.0 },
-      { h: 60, low: 23.0, med: 20.0, high: 18.0 }, // Approaching plateau
+      { h: 60, low: 23.0, med: 20.0, high: 18.0 }, 
       { h: 72, low: 24.0, med: 21.0, high: 18.5 },
       { h: 84, low: 24.5, med: 22.0, high: 19.0 },
       { h: 96, low: 25.0, med: 22.5, high: 19.0 }, // Plateau
@@ -129,7 +129,7 @@ export default function NeonatalJaundiceCalculator() {
     };
   }, [hol, riskCategory]);
 
-  // 5. Bhutani Nomogram (HIGH PRECISION POINTS)
+  // 5. Bhutani Nomogram
   const bhutaniZone = useMemo(() => {
     if (hol === null || hol < 12) return "N/A (Too Early)"; 
     
@@ -166,7 +166,7 @@ export default function NeonatalJaundiceCalculator() {
         }
     }
     
-    // Fallback if < 18 hours (handled by guard clause above, but safe to keep)
+    // Fallback if < 12 hours (handled by guard clause above, but safe to keep)
     if (!p0) return "N/A";
 
     const getVal = (key) => interpolate(hol, p0.h, p0[key], p1.h, p1[key]);
