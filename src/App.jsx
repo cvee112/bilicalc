@@ -236,7 +236,7 @@ Bhutani Risk Zone: ${bhutaniZone}`;
             <h1 className="text-xl font-bold text-slate-900">Neonatal Hyperbilirubinemia Calculator</h1>
           </div>
           <p className="text-sm text-slate-500">
-            Based on <span className="font-semibold text-slate-700">AAP 2004 Guidelines</span> for infants &ge;35 weeks.
+            Based on <span className="font-semibold text-slate-700">AAP 2004 guidelines</span> for infants &ge;35 weeks.
           </p>
         </div>
 
