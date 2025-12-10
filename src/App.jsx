@@ -146,8 +146,8 @@ export default function NeonatalJaundiceCalculator() {
     };
 
     return {
-      photo: getLimit(photoCurve, riskCategory.code, hol),
-      dvet: getLimit(dvetCurve, riskCategory.code, hol)
+      photo: Math.round(getLimit(photoCurve, riskCategory.code, hol) * 2) / 2,
+      dvet: Math.round(getLimit(dvetCurve, riskCategory.code, hol) * 2) / 2
     };
   }, [hol, riskCategory]);
 
