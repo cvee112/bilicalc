@@ -28,7 +28,7 @@ Algorithms and data points are derived from:
 
 ### Installation
 
-    git clone [https://github.com/YOUR_USERNAME/bilicalc.git](https://github.com/YOUR_USERNAME/bilicalc.git)
+    git clone https://github.com/cvee112/bilicalc.git
     cd bilicalc
     npm install
 
