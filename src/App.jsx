@@ -219,12 +219,12 @@ export default function NeonatalJaundiceCalculator() {
     const photoStatus = thresholds.photo && hasTcb
       ? (tcbVal >= thresholds.photo ? "ABOVE" : "BELOW")
       : "N/A";
-    const photoLimitStr = thresholds.photo ? `(${thresholds.photo.toFixed(0)})` : "";
+    const photoLimitStr = thresholds.photo ? `(${parseFloat(thresholds.photo.toFixed(1))})` : "";
 
     const dvetStatus = thresholds.dvet && hasTcb
       ? (tcbVal >= thresholds.dvet ? "ABOVE" : "BELOW")
       : "N/A";
-    const dvetLimitStr = thresholds.dvet ? `(${thresholds.dvet.toFixed(0)})` : "";
+    const dvetLimitStr = thresholds.dvet ? `(${parseFloat(thresholds.dvet.toFixed(1))})` : "";
     const daysDisplay = isNaN(days) ? 0 : days;
 
     return `DOB: ${formatDate(dob)}
