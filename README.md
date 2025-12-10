@@ -10,7 +10,7 @@
 
 - **Risk Stratification:** Determines risk category (Low, Medium, High) based on gestational age and neurotoxicity risk factors.
 
-- **Guideline Implementation:** Uses linear interpolation on manually coded points (rounded to nearest 0.5) from AAP 2004 graphs on phototherapy, exchange transfusion, and the Bhutani nomogram.
+- **Guideline Implementation:** Uses linear interpolation on manually coded points (rounded to nearest 0.5) in 12-hour intervals from AAP 2004 graphs on phototherapy, exchange transfusion, and the Bhutani nomogram.
 
 - **Workflow Efficiency:** Generates formatted, EMR-ready summaries for immediate documentation/communication.
 
