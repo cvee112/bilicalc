@@ -1,6 +1,6 @@
 # BiliCalc
 
-**A clinical decision support tool for assessing neonatal hyperbilirubinemia risk based on AAP 2004 Guidelines.**
+**A clinical decision support tool for assessing neonatal hyperbilirubinemia risk based on the AAP 2004 guidelines.**
 
 [View Live Application](https://cvee112.github.io/bilicalc/)
 
