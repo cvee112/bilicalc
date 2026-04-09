@@ -31,6 +31,12 @@ export default function NeonatalJaundiceCalculator() {
     };
   };
 
+  const to12h = (t) => {
+    const [h, m] = t.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    return `${((h % 12) || 12)}:${String(m).padStart(2,'0')} ${period}`;
+  };
+
   // --- Initialization ---
   useEffect(() => {
     const { date, time } = getNow();
@@ -228,7 +234,7 @@ export default function NeonatalJaundiceCalculator() {
     const daysDisplay = isNaN(days) ? 0 : days;
 
     return `DOB: ${formatDate(dob)}
-TOB: ${tob}
+TOB: ${to12h(tob)}
 AOG: ${weeks} weeks ${daysDisplay} days
 HOL: ${Math.floor(hol)}
 ${riskCategory.label}
